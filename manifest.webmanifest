@@ -7,6 +7,7 @@
   "scope": "/kt-multi-interpreter/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "launch_handler": {"client_mode":"navigate-existing"},
   "orientation": "any",
   "background_color": "#eef2f7",
   "theme_color": "#111827",

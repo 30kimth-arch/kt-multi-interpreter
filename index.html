@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KT Multi Interpreter - Minutes</title>
+<meta name="theme-color" content="#111827">
+<meta name="application-name" content="KT Multi Interpreter">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">KT</div>
+      <div><div class="brand-title">KT Multi Interpreter</div><div id="tagline" class="brand-sub">5-language realtime meeting translator</div></div>
+    </div>
+    <div class="top-actions">
+      <select id="uiLang" aria-label="Language">
+        <option value="en">English</option>
+        <option value="ko">한국어</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="zh">简体中文</option>
+        <option value="ja">日本語</option>
+      </select>
+      <button id="logoutBtn" class="btn light hidden">Logout</button>
+    </div>
+  </header>
+
+  <main id="loginView" class="page">
+    <section class="card login-card">
+      <div class="muted">KT Multi Interpreter</div>
+      <h1 id="loginTitle">Sign in</h1>
+      <p id="loginDesc" class="muted">Choose your language, enter your ID and name, then start.</p>
+      <div class="row"><label id="idLabel" for="loginId">User ID / Employee No.</label><input id="loginId" maxlength="40" placeholder="user1001"></div>
+      <div class="row"><label id="nameLabel" for="displayName">Name</label><input id="displayName" maxlength="80" placeholder="KIM TAE HUN"></div>
+      <button id="startBtn" class="btn" style="width:100%">Start</button>
+      <div id="loginStatus" class="status"></div>
+      <p id="loginNote" class="note">Your selected language is used for both the whole screen and incoming translations.</p>
+    </section>
+  </main>
+
+  <main id="lobbyView" class="page hidden">
+    <div class="profile-box"><strong id="welcomeTitle">Connected</strong> · <span id="profileText"></span></div>
+    <div class="lobby-grid">
+      <section class="card action-card">
+        <h2 id="createTitle">Create meeting room</h2>
+        <p id="createDesc">Create a room as host. Participants must be approved before chatting.</p>
+        <div class="row"><label id="roomNameLabel" for="roomName">Room name</label><input id="roomName" maxlength="120" value="KT Meeting"></div>
+        <button id="createBtn" class="btn blue" style="width:100%">Create Room</button>
+        <div id="createStatus" class="status"></div>
+      </section>
+      <section class="card action-card">
+        <h2 id="joinTitle">Join meeting room</h2>
+        <p id="joinDesc">Enter the 6-character room code and wait for host approval.</p>
+        <div class="row"><label id="codeLabel" for="roomCodeInput">Room code</label><input id="roomCodeInput" maxlength="6" style="text-transform:uppercase;letter-spacing:.12em;font-size:22px;font-weight:900;text-align:center" placeholder="ABC123"></div>
+        <button id="joinBtn" class="btn green" style="width:100%">Request to Join</button>
+        <div id="joinStatus" class="status"></div>
+      </section>
+    </div>
+  </main>
+
+  <main id="roomView" class="page hidden" style="padding-top:18px">
+    <section class="card room-layout">
+      <aside class="sidebar">
+        <div class="side-section">
+          <strong id="roomInfoTitle">Meeting room</strong>
+          <div id="roomCodeOut" class="room-code">------</div>
+          <div class="kv">
+            <b id="roomLabel">Room</b><span id="roomNameOut"></span>
+            <b id="roleLabel">Role</b><span id="roleOut"></span>
+            <b id="languageLabel">Language</b><span id="languageOut"></span>
+            <b id="countLabel">Participants</b><span id="countOut">-</span>
+          </div>
+        </div>
+
+        <div id="hostMembersSection" class="side-section hidden">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <strong id="participantsTitle">Participants</strong>
+            <button id="refreshMembersBtn" class="btn light" style="padding:7px 10px">Refresh</button>
+          </div>
+          <div id="memberList"></div>
+          <div id="memberStatus" class="status"></div>
+        </div>
+
+        <div id="minutesSection" class="side-section minutes-card hidden">
+          <strong id="minutesTitle">Meeting minutes</strong>
+          <div class="note" id="minutesNote" style="margin-top:6px">Create minutes from the current chat.</div>
+          <button id="minutesBtn" class="btn blue" style="width:100%;margin-top:10px">Create minutes</button>
+          <div id="minutesStatus" class="status"></div>
+        </div>
+
+        <div class="side-section">
+          <div id="securityNote" class="note">Only approved room members can read, send, or translate messages.</div>
+        </div>
+      </aside>
+
+      <section class="chat-pane">
+        <div class="chat-head"><span id="chatTitle">Meeting Chat</span><span id="connectionText" class="muted" style="font-size:12px">Connected</span></div>
+
+        <div id="waitingView" class="waiting hidden">
+          <div class="wait-box">
+            <h2 id="waitingTitle">Waiting for host approval</h2>
+            <p id="waitingDesc" class="muted">This screen will update automatically after the host approves you.</p>
+          </div>
+        </div>
+
+        <div id="blockedView" class="waiting hidden">
+          <div class="wait-box danger-box">
+            <h2 id="blockedTitle">Access denied</h2>
+            <p id="blockedDesc" class="muted">The host rejected or removed this participant.</p>
+          </div>
+        </div>
+
+        <div id="chat" class="chat"></div>
+        <div id="composer" class="composer hidden">
+          <input id="messageInput" maxlength="4000" placeholder="Type a message…">
+          <button id="sendBtn" class="btn">Send</button>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<div id="minutesModal" class="minutes-modal hidden">
+  <section class="minutes-panel">
+    <div class="minutes-head">
+      <div>
+        <h2 id="minutesModalTitle">Meeting minutes</h2>
+        <div id="minutesMeta" class="minutes-meta"></div>
+      </div>
+      <button id="minutesCloseBtn" class="minutes-close">Close</button>
+    </div>
+    <div id="minutesContent"></div>
+    <div class="minutes-actions">
+      <button id="saveTxtBtn" class="btn light">Save TXT</button>
+      <button id="savePdfBtn" class="btn">Save PDF</button>
+    </div>
+  </section>
+</div>
+
+<script src="config.js"></script>
+<script src="room.js"></script>
+<script src="chat.js"></script>
+<script src="app-extra.js"></script>
+</body>
+</html>

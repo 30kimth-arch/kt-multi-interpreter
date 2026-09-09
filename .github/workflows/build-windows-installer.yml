@@ -1,0 +1,46 @@
+name: Build Windows Installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'windows/**'
+      - '.github/workflows/build-windows-installer.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore windows/KTMultiInterpreter.csproj
+
+      - name: Publish Windows app
+        run: dotnet publish windows/KTMultiInterpreter.csproj -c Release -r win-x64 --self-contained true -o windows/publish -p:PublishReadyToRun=false
+
+      - name: Install Inno Setup
+        shell: powershell
+        run: choco install innosetup -y --no-progress
+
+      - name: Build Setup EXE
+        shell: powershell
+        run: '& "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "windows\installer.iss"'
+
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: KT-Multi-Interpreter-Windows-Setup
+          path: windows/dist/KT_Multi_Interpreter_Windows_Setup_v1.exe
+          if-no-files-found: error
+          retention-days: 30

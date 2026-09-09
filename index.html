@@ -1,8 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="notranslate" translate="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
 <title>KT Multi Interpreter</title>
 <meta name="theme-color" content="#111827">
 <meta name="application-name" content="KT Multi Interpreter">
@@ -10,20 +12,20 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="KT Interpreter">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.webmanifest?v=20260910-3">
 <link rel="apple-touch-icon" href="icons/kt-icon-192.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/kt-icon-192.png">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=20260910-3">
 </head>
-<body>
+<body translate="no">
 <div class="app">
   <header class="topbar">
     <div class="brand">
       <div class="logo">KT</div>
-      <div><div class="brand-title">KT Multi Interpreter</div><div id="tagline" class="brand-sub">5-language realtime meeting translator</div></div>
+      <div class="brand-copy"><div class="brand-title">KT Multi Interpreter</div><div id="tagline" class="brand-sub">5-language realtime meeting translator</div></div>
     </div>
     <div class="top-actions">
-      <button id="installPwaBtn" class="btn light pwa-install">Install / Add icon</button>
+      <button id="installPwaBtn" class="btn light pwa-install">Install</button>
       <select id="uiLang" aria-label="Language">
         <option value="en">English</option>
         <option value="ko">한국어</option>
@@ -40,8 +42,8 @@
       <div class="muted">KT Multi Interpreter</div>
       <h1 id="loginTitle">Sign in</h1>
       <p id="loginDesc" class="muted">Choose your language, enter your ID and name, then start.</p>
-      <div class="row"><label id="idLabel" for="loginId">User ID / Employee No.</label><input id="loginId" maxlength="40" placeholder="user1001"></div>
-      <div class="row"><label id="nameLabel" for="displayName">Name</label><input id="displayName" maxlength="80" placeholder="KIM TAE HUN"></div>
+      <div class="row"><label id="idLabel" for="loginId">User ID / Employee No.</label><input id="loginId" maxlength="40" autocomplete="off" placeholder="user1001"></div>
+      <div class="row"><label id="nameLabel" for="displayName">Name</label><input id="displayName" maxlength="80" autocomplete="off" placeholder="KIM TAE HUN"></div>
       <button id="startBtn" class="btn" style="width:100%">Start</button>
       <div id="loginStatus" class="status"></div>
       <p id="loginNote" class="note">Your selected language is used for both the whole screen and incoming translations.</p>
@@ -155,11 +157,11 @@
   </section>
 </div>
 
-<script src="config.js"></script>
-<script src="room.js"></script>
-<script src="chat.js"></script>
-<script src="app-extra.js"></script>
-<script src="android-bridge.js"></script>
-<script src="pwa.js"></script>
+<script src="config.js?v=20260910-3"></script>
+<script src="room.js?v=20260910-3"></script>
+<script src="chat.js?v=20260910-3"></script>
+<script src="app-extra.js?v=20260910-3"></script>
+<script src="android-bridge.js?v=20260910-3"></script>
+<script src="pwa.js?v=20260910-3"></script>
 </body>
 </html>

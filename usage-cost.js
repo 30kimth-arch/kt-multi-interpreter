@@ -1,0 +1,14 @@
+(()=>{
+ const K='ktmi_monthly_usage_v1', RATE=1400, INPUT_PER_MSG=90, OUTPUT_PER_TRANSLATION=110, TRANSLATIONS_PER_MSG=4;
+ // Default estimator uses GPT-5 mini public token prices as of this build: input $0.25/M, output $2/M.
+ const IN_PRICE=.25/1e6, OUT_PRICE=2/1e6;
+ const monthKey=()=>new Date().toISOString().slice(0,7);
+ function read(){try{const x=JSON.parse(localStorage.getItem(K)||'{}');return x.month===monthKey()?x:{month:monthKey(),messages:0,chars:0}}catch{return {month:monthKey(),messages:0,chars:0}}}
+ function write(x){localStorage.setItem(K,JSON.stringify(x));render()}
+ function add(text){const x=read();x.messages++;x.chars+=(text||'').length;write(x)}
+ function money(n){return Math.round(n).toLocaleString()}
+ function render(){const x=read(), calls=x.messages*TRANSLATIONS_PER_MSG;const scale=Math.max(.25,x.chars/Math.max(1,x.messages*60));const input=x.messages*INPUT_PER_MSG*scale, output=calls*OUTPUT_PER_TRANSLATION*scale;const usd=input*IN_PRICE+output*OUT_PRICE,krw=usd*RATE;const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};set('costMessages',x.messages.toLocaleString());set('costCalls',calls.toLocaleString());set('costUsd','$'+usd.toFixed(2));set('costKrw','₩'+money(krw));set('costMonth',x.month+' · Local device estimate');}
+ function labels(){const l=document.getElementById('uiLang')?.value||'en';const T={en:['Monthly usage & cost','Messages','Est. API calls','Est. API cost','Est. monthly cost','Estimate only. Actual OpenAI billing may differ by model, token length and translation count.'],ko:['월간 사용량 · 비용','메시지','예상 API 호출','예상 API 비용','예상 월 비용','예상값입니다. 실제 OpenAI 청구액은 모델, 토큰 길이, 번역 횟수에 따라 달라질 수 있습니다.'],vi:['Sử dụng & chi phí tháng','Tin nhắn','Lượt API ước tính','Chi phí API ước tính','Chi phí tháng ước tính','Chỉ là ước tính. Chi phí thực tế phụ thuộc mô hình, số token và số lần dịch.'],zh:['月度用量与费用','消息','预计 API 调用','预计 API 费用','预计月费用','仅为估算。实际费用会因模型、Token长度和翻译次数而变化。'],ja:['月間使用量・費用','メッセージ','推定API呼出','推定API費用','推定月額','概算です。実際の料金はモデル、トークン長、翻訳回数で変わります。']}[l]||null;if(!T)return;['costTitle','costMsgLabel','costApiLabel','costUsdLabel','costKrwLabel','costNote'].forEach((id,i)=>{const e=document.getElementById(id);if(e)e.textContent=T[i]})}
+ document.addEventListener('DOMContentLoaded',()=>{render();labels();document.getElementById('uiLang')?.addEventListener('change',()=>setTimeout(labels,0));const btn=document.getElementById('sendBtn'),inp=document.getElementById('messageInput');btn?.addEventListener('click',()=>{const t=inp?.value?.trim();if(t)add(t)},true);inp?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){const t=inp.value.trim();if(t)add(t)}},true);});
+ window.KT_USAGE={add,render};
+})();

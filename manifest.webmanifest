@@ -1,0 +1,19 @@
+{
+  "name": "KT Multi Interpreter",
+  "short_name": "KT Interpreter",
+  "description": "5-language realtime meeting translator",
+  "id": "/kt-multi-interpreter/",
+  "start_url": "/kt-multi-interpreter/?source=pwa",
+  "scope": "/kt-multi-interpreter/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#eef2f7",
+  "theme_color": "#111827",
+  "lang": "en",
+  "categories": ["productivity", "business", "utilities"],
+  "icons": [
+    {"src":"icons/kt-icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icons/kt-icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

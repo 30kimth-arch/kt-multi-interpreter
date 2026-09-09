@@ -2,10 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KT Multi Interpreter - Minutes</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KT Multi Interpreter</title>
 <meta name="theme-color" content="#111827">
 <meta name="application-name" content="KT Multi Interpreter">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="KT Interpreter">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/kt-icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/kt-icon-192.png">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,6 +23,7 @@
       <div><div class="brand-title">KT Multi Interpreter</div><div id="tagline" class="brand-sub">5-language realtime meeting translator</div></div>
     </div>
     <div class="top-actions">
+      <button id="installPwaBtn" class="btn light pwa-install">Install / Add icon</button>
       <select id="uiLang" aria-label="Language">
         <option value="en">English</option>
         <option value="ko">한국어</option>
@@ -139,10 +147,19 @@
   </section>
 </div>
 
+<div id="pwaHelp" class="minutes-modal hidden">
+  <section class="pwa-help-panel">
+    <h2 id="pwaHelpTitle">Install app</h2>
+    <p id="pwaHelpText" class="pwa-help-text"></p>
+    <button id="pwaHelpClose" class="btn" style="width:100%">OK</button>
+  </section>
+</div>
+
 <script src="config.js"></script>
 <script src="room.js"></script>
 <script src="chat.js"></script>
 <script src="app-extra.js"></script>
 <script src="android-bridge.js"></script>
+<script src="pwa.js"></script>
 </body>
 </html>

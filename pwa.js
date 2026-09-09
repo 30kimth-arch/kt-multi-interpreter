@@ -6,8 +6,53 @@
   const closeBtn=document.getElementById('pwaHelpClose');
   let deferredPrompt=null;
 
+  const ua=navigator.userAgent||'';
   const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
-  const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isIOS=()=>/iphone|ipad|ipod/i.test(ua);
+  const isAndroid=()=>/android/i.test(ua);
+  const isAndroidInApp=()=>isAndroid() && /(KAKAOTALK|NAVER|LINE\/|FBAN|FBAV|Instagram|; wv\)|\bwv\b)/i.test(ua);
+
+  function chromeIntentForCurrentPage(){
+    const path=`${location.host}${location.pathname}${location.search}${location.hash}`;
+    return `intent://${path}#Intent;scheme=https;package=com.android.chrome;end`;
+  }
+
+  function openExternalAndroidBrowser(){
+    if(!isAndroid()) return false;
+    try{
+      location.href=chromeIntentForCurrentPage();
+      return true;
+    }catch(_){
+      return false;
+    }
+  }
+
+  function addExternalBrowserButton(){
+    if(document.getElementById('externalBrowserBtn')) return;
+    const bar=document.createElement('div');
+    bar.id='externalBrowserBar';
+    bar.style.cssText='position:fixed;left:10px;right:10px;top:10px;z-index:99999;background:#fff;border:1px solid #d1d5db;border-radius:14px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);display:flex;gap:10px;align-items:center;justify-content:space-between;font-family:system-ui,sans-serif';
+    const msg=document.createElement('div');
+    msg.textContent='카카오톡/앱 내부 화면입니다. 외부 브라우저에서 열면 더 안정적으로 사용할 수 있습니다.';
+    msg.style.cssText='font-size:13px;line-height:1.35;color:#111827;flex:1';
+    const btn=document.createElement('button');
+    btn.id='externalBrowserBtn';
+    btn.type='button';
+    btn.textContent='Chrome에서 열기';
+    btn.style.cssText='border:0;border-radius:10px;padding:10px 12px;background:#2563eb;color:#fff;font-weight:700;white-space:nowrap';
+    btn.addEventListener('click',openExternalAndroidBrowser);
+    bar.append(msg,btn);
+    document.body.appendChild(bar);
+  }
+
+  // KakaoTalk, Naver, LINE, Facebook, Instagram and Android WebView:
+  // try to hand the page off to Chrome instead of keeping it inside the messenger's in-app browser.
+  if(isAndroidInApp() && !isStandalone()){
+    window.addEventListener('DOMContentLoaded',()=>{
+      addExternalBrowserButton();
+      setTimeout(openExternalAndroidBrowser,350);
+    },{once:true});
+  }
 
   if('serviceWorker' in navigator){
     window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{}));
@@ -53,7 +98,7 @@
   if(closeBtn) closeBtn.addEventListener('click',()=>help?.classList.add('hidden'));
   if(help) help.addEventListener('click',e=>{if(e.target===help) help.classList.add('hidden');});
 
-  // Open every HTTP/HTTPS link in a separate browser window/tab so the current KT Multi Interpreter screen remains open.
+  // Links clicked from within KT Multi Interpreter open separately so the meeting screen stays open.
   document.addEventListener('click',e=>{
     const a=e.target.closest?.('a[href]');
     if(!a) return;

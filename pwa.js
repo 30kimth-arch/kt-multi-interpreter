@@ -43,9 +43,9 @@
         return;
       }
       if(isIOS()){
-        showHelp('홈 화면에 추가','Safari 하단의 공유 버튼(□↑)을 누른 뒤 “홈 화면에 추가”를 선택하세요. 추가 후 KT Multi Interpreter 아이콘으로 실행하면 앱 화면이 그대로 유지됩니다.');
+        showHelp('홈 화면에 추가','Safari 하단의 공유 버튼(□↑)을 누른 뒤 “홈 화면에 추가”를 선택하세요.');
       }else{
-        showHelp('앱 설치 / 바탕화면 아이콘','Chrome 또는 Edge 주소창 오른쪽의 설치 아이콘을 선택하거나 브라우저 메뉴에서 “앱 설치”를 선택하세요. 설치 후 바탕화면 또는 시작 메뉴의 KT Multi Interpreter 아이콘으로 실행할 수 있습니다.');
+        showHelp('앱 설치 / 바탕화면 아이콘','Chrome 또는 Edge 주소창 오른쪽의 설치 아이콘을 선택하거나 브라우저 메뉴에서 “앱 설치”를 선택하세요.');
       }
     });
   }
@@ -53,16 +53,14 @@
   if(closeBtn) closeBtn.addEventListener('click',()=>help?.classList.add('hidden'));
   if(help) help.addEventListener('click',e=>{if(e.target===help) help.classList.add('hidden');});
 
-  // Keep same-origin navigation inside the PWA window. External links open separately without replacing the meeting screen.
+  // Open every HTTP/HTTPS link in a separate browser window/tab so the current KT Multi Interpreter screen remains open.
   document.addEventListener('click',e=>{
     const a=e.target.closest?.('a[href]');
     if(!a) return;
     const url=new URL(a.href,location.href);
-    if(url.origin===location.origin && url.pathname.startsWith('/kt-multi-interpreter/')){
-      a.removeAttribute('target');
-    }else if(/^https?:$/.test(url.protocol)){
-      a.target='_blank';
-      a.rel='noopener noreferrer';
+    if(/^https?:$/.test(url.protocol)){
+      e.preventDefault();
+      window.open(url.href,'_blank','noopener,noreferrer');
     }
   });
 })();

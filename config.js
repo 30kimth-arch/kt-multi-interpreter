@@ -27,9 +27,26 @@ function code6(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';crypto.
 
 function applyLang(v){
  lang=I18N[v]?v:'en';document.documentElement.lang=lang;$('uiLang').value=lang;
+ try{localStorage.setItem('kt_pwa_ui_language',lang)}catch(_){}
  const M={tagline:'tagline',loginTitle:'loginTitle',loginDesc:'loginDesc',idLabel:'idLabel',nameLabel:'nameLabel',startBtn:'start',loginNote:'loginNote',welcomeTitle:'connected',createTitle:'createTitle',createDesc:'createDesc',roomNameLabel:'roomName',createBtn:'create',joinTitle:'joinTitle',joinDesc:'joinDesc',codeLabel:'code',joinBtn:'join',roomInfoTitle:'roomInfo',roomLabel:'room',roleLabel:'role',languageLabel:'language',countLabel:'count',participantsTitle:'participants',refreshMembersBtn:'refresh',securityNote:'security',chatTitle:'chat',connectionText:'connected',waitingTitle:'waitingTitle',waitingDesc:'waitingDesc',blockedTitle:'blockedTitle',blockedDesc:'blockedDesc',sendBtn:'send',logoutBtn:'logout',minutesTitle:'minutesTitle',minutesNote:'minutesNote',minutesBtn:'minutesCreate',minutesModalTitle:'minutesTitle',minutesCloseBtn:'minutesClose',saveTxtBtn:'saveTxt',savePdfBtn:'savePdf'};
  for(const [id,key] of Object.entries(M))if($(id))$(id).textContent=t(key);
  $('messageInput').placeholder=t('type');
+ const EXTRA={
+  en:{guide:'Guide',install:'Install',roomPlaceholder:'Room name',roomDefault:'KT Meeting',idPlaceholder:'Employee ID',namePlaceholder:'Name',offline:'Offline'},
+  ko:{guide:'사용 안내',install:'앱 설치',roomPlaceholder:'회의실 이름',roomDefault:'KT 회의',idPlaceholder:'사번 / 사용자 ID',namePlaceholder:'이름',offline:'오프라인'},
+  vi:{guide:'Hướng dẫn',install:'Cài đặt',roomPlaceholder:'Tên phòng họp',roomDefault:'Cuộc họp KT',idPlaceholder:'Mã nhân viên',namePlaceholder:'Họ và tên',offline:'Ngoại tuyến'},
+  zh:{guide:'使用指南',install:'安装应用',roomPlaceholder:'会议室名称',roomDefault:'KT 会议',idPlaceholder:'员工编号',namePlaceholder:'姓名',offline:'离线'},
+  ja:{guide:'利用案内',install:'アプリをインストール',roomPlaceholder:'会議室名',roomDefault:'KT 会議',idPlaceholder:'社員番号',namePlaceholder:'氏名',offline:'オフライン'}
+ }[lang];
+ for(const [id,value] of Object.entries({guideBtn:EXTRA.guide,installPwaBtn:EXTRA.install})){const el=$(id);if(el)el.textContent=value}
+ const placeholders={loginId:EXTRA.idPlaceholder,displayName:EXTRA.namePlaceholder,roomName:EXTRA.roomPlaceholder};
+ for(const [id,value] of Object.entries(placeholders)){const el=$(id);if(el)el.placeholder=value}
+ const roomName=$('roomName');
+ if(roomName && (!roomName.dataset.userEdited || roomName.value===roomName.dataset.defaultValue)){
+  roomName.value=EXTRA.roomDefault;roomName.dataset.defaultValue=EXTRA.roomDefault;
+ }
+ if($('connectionText') && !navigator.onLine)$('connectionText').textContent=EXTRA.offline;
+ document.dispatchEvent(new CustomEvent('kt:languagechange',{detail:{language:lang}}));
  if(profile){$('languageOut').textContent=langName(profile.language)}
  if(state?.mode){$('roleOut').textContent=state.mode==='host'?t('host'):t('member')}
 }

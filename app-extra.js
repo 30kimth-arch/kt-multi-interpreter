@@ -161,4 +161,6 @@ window.addEventListener('offline',()=>{
  if($('connectionText')) $('connectionText').textContent='Offline';
 });
 
-applyLang('en');restore();
+let initialLanguage='en';
+try{initialLanguage=localStorage.getItem('kt_pwa_ui_language')||'en'}catch(_){}
+applyLang(initialLanguage);restore();
